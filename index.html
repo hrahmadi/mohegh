@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>محق | سازمان مردم‌نهاد حمایت از مستأجران</title>
+<meta name="description" content="محق؛ صدای جمعی مستأجران. عضو خبرنامه شوید.">
+<meta property="og:title" content="محق | صدای جمعی مستأجران">
+<meta property="og:image" content="assets/logo-nobg.png">
+<link rel="icon" href="assets/logo-nobg.png">
+<style>
+@font-face{font-family:Peyda;src:url(assets/Peyda-SemiBold.ttf) format("truetype");font-weight:500;font-display:swap}
+@font-face{font-family:Peyda;src:url(assets/Peyda-Black.ttf) format("truetype");font-weight:900;font-display:swap}
+/* Layout: teal hero band with logo + thesis, three facts in a row, the newsletter form as the page's one job */
+:root{--teal:#225B7A;--orange:#F89736;--cream:#F8F7EA;--paper:#FFFFFF;--ink:#1D2328;--muted:#5D6870;--line:#DAD8C8;--head:#225B7A;
+--font:Peyda,Tahoma,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--cream:#141B20;--paper:#1C252C;--ink:#ECEBE2;--muted:#9AA6AD;--line:#2F3B44;--teal:#2C6F93;--head:#7FB9D6;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font);font-weight:500;line-height:1.85;font-size:17px}
+.in{max-width:980px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+.hero{background:var(--teal);color:#F8F7EA;position:relative;overflow:hidden}
+.hero .in{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding-block:56px 64px;position:relative;z-index:1}
+.hero img{width:120px;height:auto}
+.hero h1{margin:0;font-weight:900;font-size:clamp(2rem,5vw,3.1rem);line-height:1.35;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero p{margin:12px 0 0;max-width:34em;opacity:.92}
+.hero .cta{display:inline-block;margin-top:20px;background:var(--orange);color:#1D2328;font-weight:900;padding:10px 24px;border-radius:6px;text-decoration:none}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.facts div{padding:26px 20px;border-inline-start:1px solid var(--line)}
+.facts div:first-child{border-inline-start:0}
+.facts b{display:block;font-weight:900;font-size:2.1rem;color:var(--head);line-height:1.4}
+.facts span{color:var(--muted);font-size:.92rem}
+.src{margin:10px auto 0;font-size:.8rem;color:var(--muted)}
+.src a{color:inherit}
+.about{padding-block:32px 40px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.about h2,.join h2{font-weight:900;font-size:1.45rem;margin:0 0 8px;color:var(--head)}
+.about p{margin:0}
+.join{background:var(--paper);border-top:4px solid var(--orange)}
+.join .in{padding-block:44px 56px;display:grid;grid-template-columns:1fr 1.4fr;gap:40px}
+.join .lead{color:var(--muted)}
+form{display:flex;flex-direction:column;gap:22px;min-width:0}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+legend,label.q{font-weight:900;font-size:1rem;padding:0;margin-bottom:6px;display:block}
+legend small,label.q small{font-weight:500;color:var(--muted)}
+input[type=text]{font:inherit;font-size:1rem;padding:11px 14px;border:1px solid var(--line);border-radius:6px;background:var(--cream);color:var(--ink);width:100%}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:.93rem;background:var(--cream)}
+.opts input{accent-color:var(--teal)}
+.opts label:has(input:checked){border-color:var(--teal);background:var(--teal);color:#F8F7EA}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;font-weight:900;font-size:1.05rem;background:var(--teal);color:#F8F7EA;border:0;border-radius:6px;padding:13px;cursor:pointer}
+button:disabled{opacity:.6}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.msg{font-weight:900;padding:12px 14px;border-radius:6px;display:none}
+.msg.ok{display:block;background:#E3F1E8;color:#205C38}.msg.err{display:block;background:#FBE4DA;color:#8A2E0E}
+footer{padding-block:28px;color:var(--muted);font-size:.9rem}
+footer .in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer a{color:inherit}
+@media (max-width:720px){.hero .in,.about,.join .in{grid-template-columns:1fr}.hero img{width:86px}.facts{grid-template-columns:1fr}.facts div{border-inline-start:0;border-top:1px solid var(--line)}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="in">
+    <img src="assets/logo-white-nobg.png" alt="لوگوی محق">
+    <div>
+      <h1>مسکن، <em>جای زندگی</em> است؛<br>نه کالای سرمایه‌ای.</h1>
+      <p>محق سازمان مردم‌نهاد حمایت از مستأجران است. نه خیریه‌ایم، نه ناظر منفعل؛ می‌خواهیم مستأجران صاحب حق، صدا و کرامت باشند و از سکونت امن و پایدار بهره‌مند شوند.</p>
+      <a class="cta" href="#join">عضویت در خبرنامه</a>
+    </div>
+  </div>
+</header>
+
+<section class="facts in" aria-label="آمار اجاره‌نشینی">
+  <div><b>بیش از ۵۱٪</b><span>جمعیت تهران مستأجرند</span></div>
+  <div><b>۷ برابر</b><span>رشد اجاره در تهران از ۱۳۹۸ تا ۱۴۰۳؛ تورم در همین دوره ۵ برابر شد</span></div>
+  <div><b>۱٫۸ برابر</b><span>اجاره ماهانه یک آپارتمان ۶۰ متری در تهران نسبت به حداقل دستمزد (۱۴۰۱)</span></div>
+</section>
+<p class="src in">منبع: بانک مرکزی، مرکز آمار ایران، شورای عالی کار · <a href="https://hrahmadi.github.io/gas-housing/rent-drivers.html">جزئیات و نمودارها</a></p>
+
+<section class="about in">
+  <div>
+    <h2>چرا محق؟</h2>
+    <p>اجاره‌نشینی در جهان الگویی عادی و شرافتمندانه است، اما در ایران به تله‌ای برای ناامنی بدل شده؛ نه قانون حمایت کافی می‌کند، نه تشکلی برای چانه‌زنی هست. این سکوت جز با صدای جمعی و سازمان‌یافته مستأجران شکسته نمی‌شود.</p>
+  </div>
+  <div>
+    <h2>چه می‌کنیم؟</h2>
+    <p>آگاهی‌رسانی درباره حقوق مستأجران، پژوهش درباره بازار اجاره، روایت تجربه‌های واقعی و پیگیری حق مسکن مندرج در اصل ۳۱ قانون اساسی، از راه رسانه، نشست و مطالبه‌گری جمعی.</p>
+  </div>
+</section>
+
+<section class="join" id="join">
+  <div class="in">
+    <div>
+      <h2>عضویت در خبرنامه</h2>
+      <p class="lead">خبرها، حقوق قانونی مستأجران و رویدادهای محق را برایتان می‌فرستیم. سه پرسش کوتاه کمک می‌کند بهتر بشناسیمتان.</p>
+    </div>
+    <form id="f" novalidate>
+      <div class="row">
+        <div><label class="q" for="name">نام <small>(اختیاری)</small></label><input type="text" id="name" name="name" autocomplete="name"></div>
+        <div><label class="q" for="contact">شماره موبایل یا ایمیل</label><input type="text" id="contact" name="contact" required placeholder="۰۹۱۲… یا name@mail.com"></div>
+      </div>
+      <fieldset>
+        <legend>۱. وضعیت سکونت شما چیست؟</legend>
+        <div class="opts">
+          <label><input type="radio" name="housing" value="مستأجر"> مستأجرم</label>
+          <label><input type="radio" name="housing" value="با خانواده"> با خانواده زندگی می‌کنم</label>
+          <label><input type="radio" name="housing" value="هم‌خانگی/پانسیون"> هم‌خانه / پانسیون</label>
+          <label><input type="radio" name="housing" value="مالک"> مالک یا موجرم</label>
+          <label><input type="radio" name="housing" value="سایر"> سایر</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>۲. مهم‌ترین دغدغه‌تان؟ <small>(چند گزینه)</small></legend>
+        <div class="opts">
+          <label><input type="checkbox" name="concern" value="افزایش اجاره"> افزایش اجاره و ودیعه</label>
+          <label><input type="checkbox" name="concern" value="تخلیه و جابه‌جایی"> تخلیه و جابه‌جایی اجباری</label>
+          <label><input type="checkbox" name="concern" value="قرارداد و حقوق قانونی"> قرارداد و حقوق قانونی</label>
+          <label><input type="checkbox" name="concern" value="کیفیت خانه"> کیفیت و ایمنی خانه</label>
+          <label><input type="checkbox" name="concern" value="مستقل شدن"> نتوانستن برای مستقل شدن</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>۳. دوست دارید چطور همراه باشید؟</legend>
+        <div class="opts">
+          <label><input type="radio" name="level" value="خبرنامه" checked> فقط خبرها را بگیرم</label>
+          <label><input type="radio" name="level" value="رویدادها"> در رویدادها و نشست‌ها شرکت کنم</label>
+          <label><input type="radio" name="level" value="داوطلب"> داوطلبانه کمک کنم</label>
+        </div>
+        <input type="text" id="skill" name="skill" placeholder="تخصص یا علاقه‌تان (حقوق، طراحی، پژوهش، فیلم…)" hidden>
+      </fieldset>
+      <button id="send">ثبت در خبرنامه</button>
+      <div class="msg" id="msg" role="status"></div>
+    </form>
+  </div>
+</section>
+
+<footer><div class="in"><span>سازمان مردم‌نهاد حمایت از مستأجران محق</span><span>اینستاگرام: <a href="https://instagram.com/mohegh.ngo" dir="ltr">@mohegh.ngo</a></span></div></footer>
+
+<script>
+// Where submissions go: paste the Google Apps Script web-app URL here (see apps_script.gs).
+const FORM_ENDPOINT = "";
+
+const f = document.getElementById('f'), msg = document.getElementById('msg'), skill = document.getElementById('skill');
+f.addEventListener('change', () => { skill.hidden = f.level.value !== 'داوطلب'; });
+const toEn = s => s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+function say(t, ok) { msg.textContent = t; msg.className = 'msg ' + (ok ? 'ok' : 'err'); }
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  const contact = toEn(f.contact.value.trim());
+  const isMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+  const isPhone = /^(\+98|0098|0)?9\d{9}$/.test(contact.replace(/[\s-]/g, ''));
+  if (!isMail && !isPhone) { say('شماره موبایل یا ایمیل معتبر وارد کنید.'); f.contact.focus(); return; }
+  if (!f.housing.value) { say('لطفاً به پرسش ۱ پاسخ دهید.'); return; }
+  const data = { time: new Date().toISOString(), name: f.name.value.trim(), contact, housing: f.housing.value,
+    concerns: [...f.querySelectorAll('[name=concern]:checked')].map(i => i.value).join('، '),
+    level: f.level.value, skill: skill.value.trim() };
+  if (!FORM_ENDPOINT) { say('فرم هنوز به برگه ثبت وصل نشده است.'); console.log(data); return; }
+  const b = document.getElementById('send'); b.disabled = true; b.textContent = 'در حال ثبت…';
+  try {
+    await fetch(FORM_ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) });
+    f.reset(); skill.hidden = true; say('ثبت شد. ممنون که همراه محق هستید.', true);
+  } catch (err) { say('ارسال نشد. اتصال اینترنت را بررسی کنید و دوباره امتحان کنید.'); }
+  b.disabled = false; b.textContent = 'ثبت در خبرنامه';
+});
+</script>
+</body>
+</html>

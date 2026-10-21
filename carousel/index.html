@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>کاروسل‌ساز محق</title>
+<link rel="icon" href="../assets/logo-nobg.png">
+<style>
+@font-face{font-family:Peyda;src:url(../assets/Peyda-SemiBold.ttf) format("truetype");font-weight:500}
+@font-face{font-family:Peyda;src:url(../assets/Peyda-Black.ttf) format("truetype");font-weight:900}
+/* Layout: editor column (cover + slide blocks) beside a live preview grid; export bar on top */
+:root{--teal:#225B7A;--orange:#F89736;--bg:#EFEEE3;--panel:#FFFFFF;--ink:#1D2328;--muted:#66717A;--line:#D9D7C7;--soft:#F8F7EA;
+--font:Peyda,Tahoma,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#12181C;--panel:#1B2329;--ink:#E9E8DF;--muted:#9AA6AD;--line:#2E3A42;--soft:#151D22;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:500;font-size:15px;line-height:1.7}
+.top{position:sticky;top:0;z-index:5;background:var(--teal);color:#F8F7EA}
+.top .in{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-block:10px}
+.top img{height:38px}
+.top h1{margin:0;font-size:1.15rem;font-weight:900;flex:1}
+.in{max-width:1400px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+button,.btn{font:inherit;font-weight:900;border:0;border-radius:6px;padding:8px 16px;cursor:pointer;background:var(--orange);color:#1D2328}
+button.ghost{background:transparent;color:inherit;border:1px solid currentColor}
+button.small{padding:3px 10px;font-size:.82rem;font-weight:500}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+main{display:grid;grid-template-columns:minmax(320px,440px) 1fr;gap:22px;padding-block:22px 60px}
+.ed{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.card.teal{border-color:var(--teal);box-shadow:inset 4px 0 0 var(--teal)}
+.card h2{margin:0;font-size:.95rem;font-weight:900;display:flex;align-items:center;gap:8px}
+.card h2 span{flex:1}
+label{font-size:.8rem;color:var(--muted);display:flex;justify-content:space-between}
+label .cnt{font-variant-numeric:tabular-nums}
+label .cnt.over{color:#C2410C;font-weight:900}
+input[type=text],textarea{font:inherit;font-size:.95rem;width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--soft);color:var(--ink)}
+textarea{resize:vertical;min-height:84px}
+.tg{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);cursor:pointer}
+.tg input{accent-color:var(--teal)}
+.prev{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;align-content:start;min-width:0}
+.prev figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.prev canvas{width:100%;height:auto;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.18);background:#ddd}
+.prev figcaption{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--muted)}
+.hint{font-size:.82rem;color:var(--muted);margin:0}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);width:min(640px,92vw)}
+dialog textarea{min-height:280px;direction:rtl}
+.row{display:flex;gap:8px;justify-content:flex-start;flex-wrap:wrap}
+.status{font-size:.85rem}
+@media (max-width:820px){main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <img src="../assets/logo-white-nobg.png" alt="">
+  <h1>کاروسل‌ساز محق</h1>
+  <button class="ghost" id="importBtn">وارد کردن متن</button>
+  <button id="zipBtn">دانلود همه (zip)</button>
+  <span class="status" id="status"></span>
+</div></header>
+
+<main class="in">
+  <section class="ed" id="editor" aria-label="ویرایش اسلایدها"></section>
+  <section class="prev" id="preview" aria-label="پیش‌نمایش"></section>
+</main>
+
+<dialog id="dlg">
+  <h2 style="margin-top:0;font-size:1rem">وارد کردن متن</h2>
+  <p class="hint">همان قالب اسکریپت پایتون: خط ۱ تیتر، خط ۲ زیرتیتر، خط ۳ منبع، بعد <b>---</b> و برای هر اسلاید [TITLE]، [SUB]، [TEXT] و در صورت تمایل [TEAL].</p>
+  <textarea id="importText"></textarea>
+  <div class="row" style="margin-top:10px"><button id="importGo">جایگزین کن</button><button class="ghost" id="importCancel">انصراف</button></div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const A = "../assets/";
+const LIM = {headline:30, subtitle:60, source:20, title:20, sub:40, text:130};
+const C = {black:"#000", cream:"#F8F7EA", orange:"#C4772D", bright:"#F89736", red:"#C80000"};
+const SAMPLE = {
+  headline:"نیمی از تهران مستاجرند!", subtitle:"و هر سال هم درصد مستاجران بیشتر شده است", source:"شرق",
+  slides:[
+    {title:"خانه‌به‌دوش‌ها", sub:"کاهش قدرت خرید با افزایش سهم مسکن", text:"طبق داده‌ای که در گزارش «شرق» از مرکز آمار ایران نقل شده، حدود ۵۱٪ جمعیت تهران مستاجرند. یعنی مسئله اجاره‌نشینی، مسئله یک گروه کوچک نیست.", teal:false},
+    {title:"مستأجر بودن", sub:"فقط نداشتن خانه نیست", text:"وقتی مسکن بخش بزرگی از درآمد را مصرف می‌کند، انتخاب‌های یک خانوار محدود می‌شود؛ از محل زندگی تا شغل و مدرسه بچه‌ها.", teal:false},
+    {title:"حق قانونی", sub:"که اغلب نمی‌دانیم", text:"قانون موجر و مستأجر حقوقی برای شما تعریف کرده که خیلی‌ها از آن‌ها بی‌خبرند. محق اینجاست تا این‌ها را شفاف کند.", teal:false}
+  ]};
+let S;
+try { S = JSON.parse(localStorage.getItem("mohegh-carousel")) || null; } catch(e) {}
+if (!S) S = structuredClone(SAMPLE);
+const save = () => { try { localStorage.setItem("mohegh-carousel", JSON.stringify(S)); } catch(e) {} };
+
+// ── images & fonts ────────────────────────────────────────────────
+const img = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+let BG = {};
+const ready = Promise.all([
+  img(A+"opening_bg.jpg"), img(A+"template_bg.jpg"), img(A+"template_teal_bg.jpg"),
+  document.fonts.load('900 40px Peyda'), document.fonts.load('500 40px Peyda')
+]).then(([o, t, tt]) => { BG = {open:o, tpl:t, teal:tt}; });
+
+// ── teal rule (same as generate_carousel.py) ─────────────────────
+function tealSet() {
+  const marked = S.slides.map((s, i) => s.teal ? i + 1 : 0).filter(Boolean);
+  if (marked.length) return new Set(marked);
+  const n = S.slides.length; if (!n) return new Set();
+  if (n >= 4) { const s = new Set(); for (let i = 2; i <= n; i += 3) s.add(i); return s; }
+  return new Set([Math.floor((n + 1) / 2)]);
+}
+
+// ── drawing ──────────────────────────────────────────────────────
+const fa = n => String(n).replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+function center(ctx, t, y, W, font, color) {
+  ctx.font = font;
+  let [w8, px, fam] = font.split(" "); px = parseInt(px);
+  while (ctx.measureText(t).width > W - 160 && px > 20) { px -= 2; ctx.font = `${w8} ${px}px ${fam}`; }   // shrink long lines to fit
+  ctx.fillStyle = color; ctx.textAlign = "center"; ctx.direction = "rtl"; ctx.textBaseline = "top";
+  ctx.fillText(t, W / 2, y);
+}
+function wrap(ctx, t, xRight, y, maxW, font, color, lh) {
+  ctx.font = font; ctx.fillStyle = color; ctx.textAlign = "right"; ctx.direction = "rtl"; ctx.textBaseline = "top";
+  let line = "";
+  for (const w of t.split(/\s+/).filter(Boolean)) {
+    const test = line ? line + " " + w : w;
+    if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, xRight, y); y += lh; line = w; } else line = test;
+  }
+  if (line) ctx.fillText(line, xRight, y);
+}
+function swipe(ctx, W, H, color) {
+  ctx.font = "900 28px Peyda"; ctx.fillStyle = color; ctx.textAlign = "right"; ctx.direction = "rtl"; ctx.textBaseline = "top";
+  const y = H * 0.935, x = W - 120; ctx.fillText("ورق بزنید", x, y);
+  const tw = ctx.measureText("ورق بزنید").width; ctx.font = "32px sans-serif"; ctx.fillText("👉", x - tw - 12, y - 4);
+}
+function drawCover(cv) {
+  const b = BG.open, W = cv.width = b.width, H = cv.height = b.height, ctx = cv.getContext("2d");
+  ctx.drawImage(b, 0, 0);
+  center(ctx, S.headline, H * .46, W, "900 90px Peyda", C.black);
+  center(ctx, S.subtitle, H * .60, W, "900 52px Peyda", C.black);
+  if (S.source) center(ctx, S.source, H * .775, W, "900 48px Peyda", C.red);
+  if (S.slides.length) swipe(ctx, W, H, C.black);
+}
+function drawSlide(cv, i, teal) {
+  const s = S.slides[i - 1], b = teal ? BG.teal : BG.tpl, W = cv.width = b.width, H = cv.height = b.height, ctx = cv.getContext("2d");
+  const ink = teal ? C.cream : C.black, acc = teal ? C.bright : C.orange;
+  ctx.drawImage(b, 0, 0);
+  center(ctx, `[${fa(i)}]`, 80, W, "900 130px Peyda", acc);
+  center(ctx, s.title, 268, W, "900 56px Peyda", ink);
+  center(ctx, s.sub, 420, W, "900 44px Peyda", acc);   // below the orange line
+  wrap(ctx, s.text, W - 120, 590, W - 147 - 120, "900 38px Peyda", ink, 38 * 1.6);
+  if (i < S.slides.length) swipe(ctx, W, H, ink);
+}
+
+// ── UI ───────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+function field(lbl, key, obj, limit, multi) {
+  const wrapEl = document.createElement("div");
+  const l = document.createElement("label"), cnt = document.createElement("span");
+  const inp = document.createElement(multi ? "textarea" : "input");
+  const id = "f-" + Math.random().toString(36).slice(2, 8); inp.id = id; l.htmlFor = id;
+  if (!multi) inp.type = "text";
+  inp.value = obj[key] || ""; l.append(lbl, cnt); cnt.className = "cnt";
+  const upd = () => { const n = inp.value.length; cnt.textContent = fa(n) + " / " + fa(limit); cnt.classList.toggle("over", n > limit); };
+  inp.addEventListener("input", () => { obj[key] = inp.value; upd(); save(); schedule(); });
+  upd(); wrapEl.append(l, inp); return wrapEl;
+}
+function buildEditor() {
+  const ed = $("editor"); ed.textContent = "";
+  const cover = document.createElement("div"); cover.className = "card";
+  cover.innerHTML = "<h2><span>جلد</span></h2>";
+  cover.append(field("تیتر", "headline", S, LIM.headline), field("زیرتیتر", "subtitle", S, LIM.subtitle), field("منبع (اختیاری)", "source", S, LIM.source));
+  ed.append(cover);
+  const ts = tealSet();
+  S.slides.forEach((s, k) => {
+    const c = document.createElement("div"); c.className = "card" + (ts.has(k + 1) ? " teal" : "");
+    const h = document.createElement("h2"); const t = document.createElement("span"); t.textContent = "اسلاید " + fa(k + 1) + (ts.has(k + 1) ? " · سبزآبی" : "");
+    const tg = document.createElement("label"); tg.className = "tg";
+    const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!s.teal;
+    cb.addEventListener("change", () => { s.teal = cb.checked; save(); buildEditor(); schedule(); });
+    tg.append(cb, "سبزآبی");
+    const up = mk("↑", () => move(k, -1)), dn = mk("↓", () => move(k, 1)), del = mk("حذف", () => { S.slides.splice(k, 1); save(); buildEditor(); schedule(); });
+    up.title = "بالا"; dn.title = "پایین";
+    h.append(t, tg, up, dn, del); c.append(h, field("عنوان", "title", s, LIM.title), field("زیرعنوان نارنجی", "sub", s, LIM.sub), field("متن", "text", s, LIM.text, true));
+    ed.append(c);
+  });
+  const add = document.createElement("button"); add.textContent = "+ افزودن اسلاید";
+  add.onclick = () => { S.slides.push({title:"", sub:"", text:"", teal:false}); save(); buildEditor(); schedule(); };
+  const hint = document.createElement("p"); hint.className = "hint";
+  hint.textContent = "اگر هیچ اسلایدی را سبزآبی علامت نزنید، خودکار یکی انتخاب می‌شود: اسلاید وسط، یا هر سومین اسلاید وقتی ۴ اسلاید یا بیشتر دارید.";
+  ed.append(add, hint);
+}
+function mk(t, fn) { const b = document.createElement("button"); b.className = "ghost small"; b.type = "button"; b.textContent = t; b.onclick = fn; return b; }
+function move(k, d) { const j = k + d; if (j < 0 || j >= S.slides.length) return; [S.slides[k], S.slides[j]] = [S.slides[j], S.slides[k]]; save(); buildEditor(); schedule(); }
+
+let timer; function schedule() { clearTimeout(timer); timer = setTimeout(renderAll, 150); }
+let canvases = [];
+async function renderAll() {
+  await ready;
+  const pv = $("preview"); pv.textContent = ""; canvases = [];
+  const ts = tealSet();
+  const items = [{name:"slide_00_cover.png", label:"جلد", draw: cv => drawCover(cv)}]
+    .concat(S.slides.map((s, k) => ({name:`slide_${String(k + 1).padStart(2, "0")}.png`, label:"اسلاید " + fa(k + 1), draw: cv => drawSlide(cv, k + 1, ts.has(k + 1))})));
+  for (const it of items) {
+    const fig = document.createElement("figure"), cv = document.createElement("canvas"), cap = document.createElement("figcaption");
+    it.draw(cv); canvases.push({cv, name:it.name});
+    const sp = document.createElement("span"); sp.textContent = it.label;
+    cap.append(sp, mk("دانلود", () => saveBlob(cv, it.name))); fig.append(cv, cap); pv.append(fig);
+  }
+}
+const toBlob = cv => new Promise(r => cv.toBlob(r, "image/png"));
+async function deliver(blob, filename) {
+  const dl = window.claude ? await window.claude.use("downloads").catch(() => null) : null;
+  if (dl) { try { await dl.save({filename, data: blob}); } catch(e) {} return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+async function saveBlob(cv, name) { deliver(await toBlob(cv), name); }
+$("zipBtn").onclick = async () => {
+  $("status").textContent = "در حال ساخت فایل…";
+  const z = new JSZip(); for (const {cv, name} of canvases) z.file(name, await toBlob(cv));
+  const slug = (S.headline || "carousel").replace(/[^\w؀-ۿ]+/g, "-").slice(0, 30);
+  await deliver(await z.generateAsync({type:"blob"}), `mohegh-${slug}.zip`);
+  $("status").textContent = "";
+};
+
+// ── import (same format as generate_carousel.py) ─────────────────
+function parse(text) {
+  const [head, body = ""] = text.split("---");
+  const h = head.split("\n").map(s => s.trim()).filter(Boolean);
+  const out = {headline:h[0] || "", subtitle:h[1] || "", source:h[2] || "", slides:[]}; let cur = null;
+  for (let line of body.split("\n")) {
+    line = line.trim(); if (!line) continue;
+    if (line.startsWith("[TITLE]")) { cur = {title:line.slice(7).trim(), sub:"", text:"", teal:false}; out.slides.push(cur); }
+    else if (!cur) continue;
+    else if (line.startsWith("[SUB]")) cur.sub = line.slice(5).trim();
+    else if (line.startsWith("[TEXT]")) cur.text = line.slice(6).trim();
+    else if (line.startsWith("[TEAL]")) cur.teal = true;
+    else if (line.startsWith("[+]")) cur.text += " " + line.slice(3).trim();
+  }
+  return out;
+}
+$("importBtn").onclick = () => { $("importText").value = ""; $("dlg").showModal(); };
+$("importCancel").onclick = () => $("dlg").close();
+$("importGo").onclick = () => { const p = parse($("importText").value); if (p.headline || p.slides.length) { S = p; save(); buildEditor(); schedule(); } $("dlg").close(); };
+
+buildEditor(); renderAll();
+</script>
+</body>
+</html>
