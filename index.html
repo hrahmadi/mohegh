@@ -11,12 +11,14 @@
 <style>
 @font-face{font-family:Peyda;src:url(assets/Peyda-SemiBold.ttf) format("truetype");font-weight:500;font-display:swap}
 @font-face{font-family:Peyda;src:url(assets/Peyda-Black.ttf) format("truetype");font-weight:900;font-display:swap}
+@font-face{font-family:Vazirmatn;src:url(assets/Vazirmatn-Regular.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:Vazirmatn;src:url(assets/Vazirmatn-Bold.woff2) format("woff2");font-weight:700;font-display:swap}
 /* Layout: teal hero band with logo + thesis, three facts in a row, the newsletter form as the page's one job */
 :root{--teal:#225B7A;--orange:#F89736;--cream:#F8F7EA;--paper:#FFFFFF;--ink:#1D2328;--muted:#5D6870;--line:#DAD8C8;--head:#225B7A;
---font:Peyda,Tahoma,"Segoe UI",sans-serif}
+--font:Vazirmatn,Tahoma,"Segoe UI",sans-serif;--display:Peyda,Vazirmatn,Tahoma,sans-serif}
 @media (prefers-color-scheme:dark){:root{--cream:#141B20;--paper:#1C252C;--ink:#ECEBE2;--muted:#9AA6AD;--line:#2F3B44;--teal:#2C6F93;--head:#7FB9D6;color-scheme:dark}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font);font-weight:500;line-height:1.85;font-size:17px}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font);font-weight:400;line-height:1.9;font-size:17px}
 .in{max-width:980px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
 .hero{background:var(--teal);color:#F8F7EA;position:relative;overflow:hidden}
 .hero .in{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding-block:56px 64px;position:relative;z-index:1}
@@ -53,6 +55,8 @@ button:disabled{opacity:.6}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 .msg{font-weight:900;padding:12px 14px;border-radius:6px;display:none}
 .msg.ok{display:block;background:#E3F1E8;color:#205C38}.msg.err{display:block;background:#FBE4DA;color:#8A2E0E}
+h1,h2,.facts b,.cta,legend,label.q,button,.msg{font-family:var(--display)}
+legend small,label.q small{font-family:var(--font);font-weight:400}
 footer{padding-block:28px;color:var(--muted);font-size:.9rem}
 footer .in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 footer a{color:inherit}
@@ -139,7 +143,7 @@ footer a{color:inherit}
 
 <script>
 // Where submissions go: paste the Google Apps Script web-app URL here (see apps_script.gs).
-const FORM_ENDPOINT = "";
+const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbyQhnAMIeL7a5lNihqbRrmpk2ZVzcola2AFzOtZICIB0brZu-OtAzJeMXv1UAqefZkJ/exec";
 
 const f = document.getElementById('f'), msg = document.getElementById('msg'), skill = document.getElementById('skill');
 f.addEventListener('change', () => { skill.hidden = f.level.value !== 'داوطلب'; });
